@@ -1,4 +1,5 @@
-# ID: 52880611
+# ID: 53109928
+
 
 class My_deque_sized:
     def __init__(self, values_num):
@@ -11,36 +12,35 @@ class My_deque_sized:
     def is_empty(self):
         return self.size == 0
 
+    def is_full(self):
+        return self.size == self.max_n
+
     def push_front(self, value):
-        if self.size != self.max_n:
-            self.head = (self.head - 1) % self.max_n
-            self.queue[self.head] = value
-            self.size += 1
-        else:
-            print('error')
+        if self.is_full():
+            raise IndexError
+        self.head = (self.head - 1) % self.max_n
+        self.queue[self.head] = value
+        self.size += 1
 
     def push_back(self, value):
-        if self.size != self.max_n:
-            self.queue[self.tail] = value
-            self.tail = (self.tail + 1) % self.max_n
-            self.size += 1
-        else:
-            print('error')
+        if self.is_full():
+            raise IndexError
+        self.queue[self.tail] = value
+        self.tail = (self.tail + 1) % self.max_n
+        self.size += 1
 
     def pop_front(self):
         if self.is_empty():
-            return 'error'
+            raise IndexError
         pop_value = self.queue[self.head]
-        self.queue[self.head] = None
         self.head = (self.head + 1) % self.max_n
         self.size -= 1
         return pop_value
 
     def pop_back(self):
         if self.is_empty():
-            return 'error'
+            raise IndexError
         pop_value = self.queue[self.tail-1]
-        self.queue[self.tail-1] = None
         self.tail = (self.tail - 1) % self.max_n
         self.size -= 1
         return pop_value
@@ -48,22 +48,39 @@ class My_deque_sized:
 
 def input_data(file_name):
     with open(file_name, 'r') as data:
-        command_num = int(data.readline())
-        values_num = int(data.readline())
+        command_num = int(data.readline().strip())
+        values_num = int(data.readline().strip())
         data = data.read().splitlines()
-        d = My_deque_sized(values_num)
+        my_deque = My_deque_sized(values_num)
 
-        for command in data:
-            if 'pop_front' in command:
-                print(d.pop_front())
-            elif 'pop_back' in command:
-                print(d.pop_back())
-            elif 'push_front' in command:
-                command = command.strip().split()
-                d.push_front(int(command[1]))
-            elif 'push_back' in command:
-                command = command.strip().split()
-                d.push_back(int(command[1]))
+    COMMANDS = {
+        'push_back': my_deque.push_back,
+        'push_front': my_deque.push_front,
+        'pop_front': my_deque.pop_front,
+        'pop_back': my_deque.pop_back,
+    }
+
+    def print_result(value):
+        if value is not None:
+            print(value)
+
+    for line in data:
+        command, *argument = line.split()
+        if command not in COMMANDS:
+            print(f'Команда {command} не поддерживается.')
+            break
+        if argument:
+            try:
+                result = COMMANDS[command](*argument)
+                print_result(result)
+            except IndexError:
+                print('error')
+        else:
+            try:
+                result = COMMANDS[command]()
+                print_result(result)
+            except IndexError:
+                print('error')
 
 
 if __name__ == '__main__':

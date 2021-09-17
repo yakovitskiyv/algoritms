@@ -1,10 +1,14 @@
+# ID: 53014109
+
+import math
+
+
 class Stack:
     def __init__(self):
         self.operands = []
 
     def push(self, operand):
         self.operands.append(operand)
-        print(self.operands)
 
     def pop(self):
         try:
@@ -16,17 +20,33 @@ class Stack:
         return len(self.operands)
 
 
-def calculator():
-    pass
+def my_int(value):
+    if isinstance(value, str):
+        return int(value)
+    return math.floor(value)
+
+
+def calculator(seq):
+    s = Stack()
+    for symbol in seq.split():
+        if symbol in '-+*/':
+            num2, num1 = my_int(s.pop()), my_int(s.pop())
+            command = str(num1) + str(symbol) + str(num2)
+            try:
+                result = my_int(eval(command))
+                s.push(result)
+            except ZeroDivisionError:
+                raise ZeroDivisionError(
+                    f'Деление на 0 при вычислении {num1} / {num2}.')
+        else:
+            s.push(symbol)
+    return s.pop()
 
 
 def input_data(file_name):
-    s = Stack()
     with open(file_name, 'r') as data:
         seq = data.readline()
-        for symbol in seq.split():
-            if symbol in '0123456789':
-                s.push(symbol)
+        print(calculator(seq))
 
 
 if __name__ == '__main__':
