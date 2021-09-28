@@ -29,9 +29,11 @@ def merge_sort(L, compare=operator.lt):
         middle = int(len(L) / 2)
         left = merge_sort(L[:middle], compare)
         right = merge_sort(L[middle:], compare)
+        print('------',middle, left, right)
         return merge(left, right, compare)
 
 def merge(left, right, compare):
+    print('!!!!!!',left,right,compare)
     result = []
     i, j = 0, 0
     while i < len(left) and j < len(right):
@@ -48,5 +50,6 @@ def merge(left, right, compare):
         result.append(right[j])
         j += 1
     return result
+
 array = [78, 41, 4, 27, 3, 27, 8, 39, 19, 34, 6, 41, 13, 52, 16]
 print(merge_sort(array))
