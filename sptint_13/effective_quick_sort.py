@@ -21,7 +21,7 @@ def quick_sort(arr,left,right):
     quick_sort(arr, i, right)
 
 
-x = [1, 2, 3, 1, 2, 3, 1, 2, 3, 22, -5, 12, 0]
+x = [4, 6, 2, 2, 4]
 
 
 quick_sort(x, 0, len(x)-1)
